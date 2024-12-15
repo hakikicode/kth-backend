@@ -3,17 +3,17 @@
     "version": "1.0.0",
     "main": "api.mjs",
     "scripts": {
-        "start": "node api.js",
-        "dev": "nodemon api.js"
+      "start": "node api.mjs",
+      "dev": "nodemon api.mjs"
     },
     "dependencies": {
-        "type": "module",
-        "body-parser": "^1.20.2",
-        "cors": "^2.8.5",
-        "express": "^4.18.2",
-        "xlsx": "^0.18.5"
+      "body-parser": "^1.20.2",
+      "cors": "^2.8.5",
+      "express": "^4.18.2",
+      "xlsx": "^0.18.5"
     },
     "devDependencies": {
-        "nodemon": "^2.0.22"
-    }     
-}
+      "nodemon": "^2.0.22"
+    }
+  }
+  
