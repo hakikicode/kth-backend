@@ -21,7 +21,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Path to database file
-const dbPath = path.join(__dirname, "db.json");
+const dbPath = path.resolve("db.json");
 
 // Ensure db.json exists
 if (!fs.existsSync(dbPath)) {
