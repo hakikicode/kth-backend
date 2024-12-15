@@ -1,22 +1,23 @@
+// Import necessary modules
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const path = require("path");
-const json2xls = require("json2xls");
 
+// Constants
+const PORT = process.env.PORT || 5001;
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "password";
 
+// Initialize express app
 const app = express();
-const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(json2xls.middleware);
 
-// Path to JSON database
+// Path to database file
 const dbPath = path.join(__dirname, "db.json");
 
 // Ensure db.json exists
@@ -24,14 +25,14 @@ if (!fs.existsSync(dbPath)) {
   fs.writeFileSync(dbPath, JSON.stringify([]));
 }
 
-// Helper function to read/write from db.json
+// Helper functions to read and write from db.json
 const readDatabase = () => JSON.parse(fs.readFileSync(dbPath, "utf8"));
 const writeDatabase = (data) => fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
 
 // Routes
 app.get("/", (req, res) => res.send("Backend is running!"));
 
-// Registration Endpoint
+// Registration endpoint
 app.post("/api/registrations", (req, res) => {
   const {
     name,
@@ -75,7 +76,7 @@ app.post("/api/registrations", (req, res) => {
   res.status(201).json({ message: "Registration successful!" });
 });
 
-// Admin Login Endpoint
+// Admin login endpoint
 app.post("/api/admin/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -86,7 +87,7 @@ app.post("/api/admin/login", (req, res) => {
   res.status(401).json({ message: "Invalid credentials." });
 });
 
-// Fetch Registrations (Admin Only)
+// Fetch registrations (admin only)
 app.get("/api/admin/registrations", (req, res) => {
   const authHeader = req.headers.authorization;
 
@@ -98,7 +99,7 @@ app.get("/api/admin/registrations", (req, res) => {
   res.status(200).json(db);
 });
 
-// Export Registrations as CSV or Excel (Admin Only)
+// Export registrations as CSV or Excel (admin only)
 app.get("/api/admin/registrations/export/:format", (req, res) => {
   const authHeader = req.headers.authorization;
 
@@ -122,7 +123,8 @@ app.get("/api/admin/registrations/export/:format", (req, res) => {
     res.setHeader("Content-Type", "text/csv");
     res.status(200).send(csvContent);
   } else if (format === "xlsx") {
-    const xlsData = json2xls(db);
+    const xlsx = require("xlsx");
+    const xlsData = xlsx(db);
     res.setHeader("Content-Disposition", "attachment; filename=registrations.xlsx");
     res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     res.status(200).send(xlsData);
@@ -131,5 +133,5 @@ app.get("/api/admin/registrations/export/:format", (req, res) => {
   }
 });
 
-// Start Server
+// Start the server
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
