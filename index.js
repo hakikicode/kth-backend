@@ -4,6 +4,9 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const path = require("path");
+const XLSX = require("xlsx"); // For CommonJS
+import XLSX from "xlsx";     // For ES Modules
+
 
 // Constants
 const PORT = process.env.PORT || 5001;
